@@ -1,0 +1,12 @@
+pipeline:
+  build:
+    image: docker
+    commands:
+      - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD registry.sklirg.io
+      - docker build -t registry.sklirg.io/wcgstats-gui:1.0.0 .
+      - docker push registry.sklirg.io/wcgstats-gui:1.0.0
+    when:
+      branch: master
+      event: push
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
