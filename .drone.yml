@@ -11,7 +11,7 @@ pipeline:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
   release:
-    image: ssh
+    image: plugins/ssh
     host: gallifrey.sklirg.io
     port: 22
     user: root
