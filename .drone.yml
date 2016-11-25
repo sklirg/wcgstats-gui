@@ -18,6 +18,6 @@ pipeline:
     when:
       branch: master
       event: push
-    commands:
+    script:
       - docker-compose -f /opt/wcgstats-client/docker-compose.yml pull
       - systemctl restart wcgstats.service
