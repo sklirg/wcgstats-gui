@@ -99,7 +99,7 @@ class GraphContainer extends Component {
   render() {
     // @ToDo: Make this load more logically
     this.loadTeamStats()
-    const renderGraph = this.state.dates.length > 1
+    const renderGraph = this.state.dates.length >= 1
     return (
       <div>
         { renderGraph ? <Graph dates={this.state.dates} /> : <p>Nothing to see here.</p> }
