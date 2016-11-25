@@ -10,36 +10,50 @@ class GraphContainer extends Component {
       fetching: false,
       lastLoaded: 0,
       teams: {},
+      startDate: "",
     }
+  }
+
+  fetchTeamStats() {
+    let startDateQuery = this.state.startDate.length > 0 ? "?start_date=" + this.state.startDate : ""
+    this.props.teams.forEach(team => {
+      fetch(this.props.apiRoot + "stats/" + team + startDateQuery)
+        .then(response => {
+          this.setState({lastLoaded: new Date().getTime()})
+          return response.json()
+        })
+        .then(response => {
+          // Try to edit start_date if we have few results
+          // This will only happen once since state.startDate will be set
+          if (response.count < 10 && this.state.startDate.length === 0) {
+            this.setState({startDate: "2016-11-20"})
+            this.fetchTeamStats()
+            return
+          }
+
+          let dates = response.results.map(stats => {
+            let d = {}
+            d["team"] = team
+            d["name"] = stats.date
+            d[team + "Daily"] = stats.points
+            return d
+          })
+
+          // Update stats for team
+          let currentTeams = this.state.teams
+          currentTeams[team] = dates
+          this.mapReduceTeams(currentTeams)
+        })
+        .catch(err => {
+          console.error("Err", err)
+        })
+    })
   }
 
   loadTeamStats() {
     let now = new Date()
     if (new Date(this.state.lastLoaded + (60 * 5 * 1000)) < now.getTime()) {
-      this.props.teams.forEach(team => {
-        fetch(this.props.apiRoot + "stats/" + team)
-          .then(response => {
-            this.setState({lastLoaded: new Date().getTime()})
-            return response.json()
-          })
-          .then(response => {
-            let dates = response.results.map(stats => {
-              let d = {}
-              d["team"] = team
-              d["name"] = stats.date
-              d[team + "Daily"] = stats.points
-              return d
-            })
-
-            // Update stats for team
-            let currentTeams = this.state.teams
-            currentTeams[team] = dates
-            this.mapReduceTeams(currentTeams)
-          })
-          .catch(err => {
-            console.error("Err", err)
-          })
-      })
+      this.fetchTeamStats()
     }
   }
 
