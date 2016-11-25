@@ -3,8 +3,8 @@ pipeline:
     image: docker
     commands:
       - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD registry.sklirg.io
-      - docker build -t registry.sklirg.io/wcgstats-gui:1.0.0 .
-      - docker push registry.sklirg.io/wcgstats-gui:1.0.0
+      - docker build -t registry.sklirg.io/wcgstats-gui:latest .
+      - docker push registry.sklirg.io/wcgstats-gui:latest
     when:
       branch: master
       event: push
