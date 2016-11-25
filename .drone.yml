@@ -10,3 +10,11 @@ pipeline:
       event: push
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+  release:
+    image: ssh
+    host: gallifrey.sklirg.io
+    port: 22
+    user: root
+    commands:
+      - docker-compose -f /opt/wcgstats-client/docker-compose.yml pull
+      - systemctl restart wcgstats.service
